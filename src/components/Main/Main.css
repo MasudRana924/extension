@@ -1,0 +1,9 @@
+.popup-container {
+    width: 350px;
+    height: 450px;
+    background-color: #f0f0f0;
+    overflow-y: auto;
+  }
+  .popup-container::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar for WebKit browsers */
+}

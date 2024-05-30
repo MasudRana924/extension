@@ -1,0 +1,15 @@
+.react-tel-input .form-control {
+    /* width: 100%; */
+    height: 45px;
+  } 
+  
+  .hero-text {
+    background: linear-gradient(to right, red, blue);
+    color: transparent;
+    -webkit-background-clip: text;
+  }
+  .register-text {
+    background: linear-gradient(to right, #82E0AA, blue);
+    color: transparent;
+    -webkit-background-clip: text;
+  }

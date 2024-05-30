@@ -1,0 +1,16 @@
+.notification-component {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .speak-notification-label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+    color:red;
+  }
+  
+  .speak-notification-checkbox {
+    margin-right: 10px;
+  }
