@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 import { logout } from "../../redux/reducers/auth/loginSlice";
 import { CiSettings } from "react-icons/ci";
+import { PiSignOutLight } from "react-icons/pi";
 const Navbar = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.userDetails.loggeduser);
@@ -57,27 +58,15 @@ const Navbar = () => {
                 height={25}
               />
             )}
-            {user ? (
-              <button
-                className="text-white  text-xs border rounded text-center w-full mt-2"
-                onClick={() => dispatch(logout())}
-              >
-                Signout
-              </button>
-            ) : (
-              <Skeleton
-                variant="text"
-                className=" mt-2"
-                width={126}
-                height={30}
-              />
-            )}
           </div>
         </div>
-        <div className="w-1/4 flex items-center justify-end mr-4">
-          <Link to='/configure'>
+        <div className="w-1/4 flex items-center justify-end mr-4 gap-8">
+        <Link to="/configure">
             <CiSettings className="text-white text-xl" />
           </Link>
+          <button className=" w-full" onClick={() => dispatch(logout())}>
+            <PiSignOutLight className="text-white text-xl " />
+          </button>
         </div>
       </div>
     </div>

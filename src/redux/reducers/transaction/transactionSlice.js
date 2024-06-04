@@ -1,18 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { privateGet } from '../../utilities/apiCaller';
 
+
 export const fetchtransactions = createAsyncThunk(
     'fetchtransactions',
-    async ({ userToken }, { rejectWithValue }) => {
+    async ({ userToken, senderphone }, { rejectWithValue }) => {
         try {
-            const response = await privateGet('/my/transactions', userToken);
+            let url = '/my/transactions';
+            if (senderphone) {
+                url += `?senderphone=${senderphone}`;
+            }
+            const response = await privateGet(url, userToken);
             return response;
         } catch (err) {
             return rejectWithValue(err.response.data);
         }
     }
 );
-
 export const fetchOutTransactions = createAsyncThunk(
     'fetchOutTransactions',
     async ({ userToken }, { rejectWithValue }) => {
@@ -49,7 +53,7 @@ export const mytransactionsSlice = createSlice({
     reducers: {
         clearLastTransaction: (state) => {
             state.lastTransaction = null;
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -66,6 +70,7 @@ export const mytransactionsSlice = createSlice({
             .addCase(fetchtransactions.rejected, (state) => {
                 state.isLoading = false;
                 state.mytransactions = [];
+                state.filteredTransactions = [];
                 state.lastTransaction = null;
             })
             .addCase(fetchOutTransactions.pending, (state) => {

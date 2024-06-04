@@ -17,7 +17,7 @@ const AllTransactions = ({ transaction }) => {
     }
     return (
         <div className="mt-4 card col-span-12  md:col-span-3  gap-4 lg:col-span-4  2xl:col-span-3 ">
-            <div className="text-start flex justify-between gap-5 bg-stone-100 border border-stone-100 rounded-lg p-2">
+            <div className="text-start flex justify-between gap-5 bg-white border border-gray-100  p-2">
                 <div className="flex">
                     <div>
                         {
@@ -41,7 +41,8 @@ const AllTransactions = ({ transaction }) => {
                         }
                         {
                             user._id === transaction.receiveuserId ? <div>
-                                <p className="text-xs text-gray-500 font-medium ml-2 mt-1">{transaction.receiverType}</p>
+                                {/* <p className="text-xs text-gray-500 font-medium ml-2 mt-1">{transaction.receiverType}</p> */}
+                                <p className="text-xs text-gray-500 font-medium ml-2 mt-1">Payment Received</p>
 
                                 <p className="text-xs text-gray-500 font-medium ml-2 mt-1">{transaction.senderphone}</p>
 

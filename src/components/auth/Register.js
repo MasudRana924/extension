@@ -22,7 +22,11 @@ const Register = () => {
     setPassword(e.target.value);
   };
   const handlePhoneChange = (e) => {
-    setPhone(e.target.value);
+    const value = e.target.value;
+    const lastChar = value[value.length - 1];
+    if (/^[0-9]$/.test(lastChar) || value === "") {
+      setPhone(value);
+    }
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,9 +75,7 @@ const Register = () => {
               ) : (
                 <button
                   className='font-mono mt-4 w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform rounded-lg'
-                  style={{
-                    backgroundColor: isValidPhone ? '#E2136E' : 'rgb(107, 114, 128)'
-                  }}
+                  style={{backgroundColor:'#E2136E'}}
                 >
                   Create
                 </button>
