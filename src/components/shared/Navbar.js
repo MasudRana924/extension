@@ -11,7 +11,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.userDetails.loggeduser);
   return (
-    <div className="main-navbar h-20">
+    <div className="main-navbar h-16">
       <div className="flex justify-between ">
         <div className="flex  w-full ">
           <div className="w-16">

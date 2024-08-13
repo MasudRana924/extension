@@ -11,6 +11,9 @@ import { Navigate } from 'react-router-dom';
 import NotifactionConfigure from "./components/configure/NotifactionConfigure";
 import Register from "./components/auth/Register";
 import TransactionList from "./components/Main/transactions/TransactionList";
+import RecentTransaction from "./components/Main/RecentTransaction";
+import SearchTransactions from "./components/Main/SearchTransactions";
+import VerificationSuccess from "./components/auth/VerificationSuccess";
 function App() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -31,16 +34,23 @@ function App() {
         <div className="App">
           <Router>
            <Routes>
-              <Route
-                path="/"
-                element={token ? <Navigate to="/main" /> : <Login />}
-              />
-              <Route
-                path="/main"
-                element={token ? <Main /> : <Navigate to="/" />}
-              />
+               {token ? (
+                <>
+                  <Route path="/main/*" element={<Main />}>
+                  <Route index element={<RecentTransaction />} />
+                <Route path="recent" element={<RecentTransaction />} />
+                <Route path="search" element={<SearchTransactions />} />
+                  </Route>
+                  <Route path="/*" element={<Navigate to="/main/recent" />} />
+                </>
+              ) : (
+                <Route path="/*" element={<Navigate to="/login" />} />
+              )}
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/verify-otp" element={<VerifyOtp />} />
+              <Route path="/verify/otp" element={<VerifyOtp />} />
+              <Route path="/verify/success" element={<VerificationSuccess />} />
+              <Route path="/verify/otp" element={<VerifyOtp />} />
               <Route path="/configure" element={<NotifactionConfigure />} />
               <Route path="/transactios" element={<TransactionList />} />
             </Routes>

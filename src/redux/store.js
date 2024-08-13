@@ -5,9 +5,11 @@ import  loginReducer  from "./reducers/auth/loginSlice";
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import  mytransactionsSlice  from "./reducers/transaction/transactionSlice";
 import isConfigurationEnabledReducer from './reducers/notification/notificationSlice';
+import otpSlice from "./reducers/auth/otpSlice";
+import verifyOTPSlice from "./reducers/auth/verifyOTPSlice";
 const persistConfig = {
   key: "authentication",
-  storage
+  storage,
 };
 const middlewares = [];
 if (process.env.NODE_ENV !== "development") {
@@ -17,6 +19,8 @@ if (process.env.NODE_ENV !== "development") {
 const persistedReducer = persistReducer(persistConfig, loginReducer);
 const rootReducer = combineReducers({
   userDetails: persistedReducer,
+  otp:otpSlice,
+  otpVerification:verifyOTPSlice,
   transactions:mytransactionsSlice,
   isConfigurationEnabled:isConfigurationEnabledReducer
 });
@@ -34,3 +38,4 @@ const store = configureStore({
 export default store;
 
 export const persistor = persistStore(store);
+

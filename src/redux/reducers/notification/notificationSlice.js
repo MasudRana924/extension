@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isSpeakEnabled: false,
-  isNotificationEnabled: false,
+  isSpeakEnabled: true,
+  isNotificationEnabled: true,
 };
 
 const isConfigurationEnabledSlice = createSlice({

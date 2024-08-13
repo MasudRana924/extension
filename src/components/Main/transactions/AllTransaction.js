@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AllTransactions from "./AllTransactions";
 import {
   clearLastTransaction,
+  fetchSearchTransactions,
   fetchtransactions,
 } from "../../../redux/reducers/transaction/transactionSlice";
 import addNotification from "react-push-notification";
@@ -16,9 +17,10 @@ const AllTransaction = () => {
   const dispatch = useDispatch();
 
   const [searchPhone, setSearchPhone] = useState("");
-  const { mytransactions, lastTransaction,isLoading } = useSelector(
+  const { mytransactions, lastTransaction, isLoading } = useSelector(
     (state) => state.transactions
   );
+  console.log("lastTransaction", lastTransaction);
   // const { isLoading } = useSelector((state) => state.transactions);
   const isSpeakEnabled = useSelector(
     (state) => state.isConfigurationEnabled.isSpeakEnabled
@@ -26,16 +28,19 @@ const AllTransaction = () => {
   const isNotificationEnabled = useSelector(
     (state) => state.isConfigurationEnabled.isNotificationEnabled
   );
-  const handleSearch = () => {
-    dispatch(fetchtransactions({ userToken, senderphone: searchPhone }));
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchPhone) {
+      dispatch(
+        fetchSearchTransactions({ userToken, senderphone: searchPhone })
+      );
+    }
   };
   let content;
   if (!isLoading && mytransactions?.length > 0) {
-    content = mytransactions
-      .slice(0, 3)
-      .map((transaction) => (
-        <AllTransactions key={transaction._id} transaction={transaction} />
-      ));
+    content = mytransactions.map((transaction) => (
+      <AllTransactions key={transaction._id} transaction={transaction} />
+    ));
   }
 
   const speakNotification = (message) => {
@@ -67,29 +72,39 @@ const AllTransaction = () => {
   }, [lastTransaction, dispatch, isSpeakEnabled, isNotificationEnabled]);
   return (
     <div className="m-2">
-      <div className="w-full flex">
-        <input
-          type="text"
-          placeholder="Enter bKash Number"
-          className="w-full h-8  outline-none border  border-pink-500 pl-4"
-          value={searchPhone}
-          onChange={(e) => setSearchPhone(e.target.value)}
-        />
-        <button
-          onClick={handleSearch}
-          className="h-8 w-20 text-white"
-          style={{ backgroundColor: "#E2136E" }}
-        >
-          Search
-        </button>
+      <div className="">
+        <form onSubmit={handleSearch} className="flex gap-4">
+          <input
+            className="w-20 h-8 border  border-pink-500 outline-none pl-2"
+            placeholder="amount"
+          />
+          <div className="flex">
+          <input
+            type="text"
+            placeholder="Enter bKash Number"
+            className="w-full h-8  outline-none border-b  border-pink-500 pl-2"
+            value={searchPhone}
+            onChange={(e) => setSearchPhone(e.target.value)}
+            required
+          />
+          <button
+            // onClick={handleSearch}
+            className="h-8 w-20 text-white"
+            style={{ backgroundColor: "#E2136E" }}
+          >
+            Search
+          </button>
+          </div>
+        </form>
       </div>
-      <div>{content}</div>
+      <div className="">{content}</div>
+
       {isLoading && (
         <div className="search-popup-overlay">
-          <div className="searchpopup">
+          <div className="searchpopup bg-gray-100">
             <Lottie
               animationData={preloaderAnimation}
-              className="h-32 w-44"
+              className="h-20 w-32"
             ></Lottie>
           </div>
         </div>

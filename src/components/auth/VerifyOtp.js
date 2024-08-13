@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { IoMdArrowBack } from "react-icons/io";
+import { useDispatch,useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-
+import { verifyOTP } from "../../redux/reducers/auth/verifyOTPSlice";
+import Lottie from "lottie-react";
+import preloaderAnimation from "../../json/Animation - 1715745618808.json";
+import axios from "axios";
 const VerifyOtp = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [otp, setOtp] = useState(["", "", "", "","",""]);
+  const [otpString, setOtp] = useState(["", "", "", "","",""]);
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
-
+  // const phoneNumber = localStorage.getItem("phoneNumber");
+  
+  const pin = localStorage.getItem("pin");
+  const { isLoading, success, errorMessage } = useSelector((state) => state.otpVerification);
   useEffect(() => {
     const savedEndTime = localStorage.getItem("otpEndTime");
     if (savedEndTime) {
@@ -49,22 +57,54 @@ const VerifyOtp = () => {
 
   const handleChange = (index, value) => {
     if (/^[0-9]$/.test(value) || value === "") {
-      const newOtp = [...otp];
+      const newOtp = [...otpString];
       newOtp[index] = value;
       setOtp(newOtp);
       // Move to the next input if the current input is not empty and not the last input
-      if (value && index < otp.length - 1) {
+      if (value && index < otpString.length - 1) {
         document.getElementById(`otp-input-${index + 1}`).focus();
       }
     }
   };
+
+
+  const [loading, setLoading] = useState(false);
+  const [successOTP, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+  const walletNo = localStorage.getItem("walletNo");
   const handleSubmit = (e) => {
     e.preventDefault();
-    const otpString = otp.join("");
-    if(otpString){
-      navigate('/')
+    const otp = otpString.join("");
+    axios
+    .post("http://10.21.179.54:8000/api/verifyOTP", {
+      walletNo: walletNo,
+      OTP:otp
+    })
+    .then((response) => {
+      console.log(response.data);
+      setLoading(false);
+      setSuccess(true);
+      localStorage.setItem('wallet_no', walletNo);
+    })
+    .catch((err) => {
+      setError(err);
+      setLoading(false);
+    });
+    // if (otpString) {
+    //     dispatch(verifyOTP({ phoneNumber, otp, pin }));
+    // }
+};
+useEffect(() => {
+    // if (success) {
+    //     navigate('/verify/success');
+    // }
+    if (successOTP) {
+        navigate('/verify/success');
     }
-  };
+    // if(errorMessage){
+    //     message.error(errorMessage)
+    // }
+}, [success, navigate,errorMessage,successOTP]);
 
   return (
     <div className="popup-container">
@@ -84,7 +124,7 @@ const VerifyOtp = () => {
                   Verification Code
                 </p>
                 <p className="text-xs pt-2 text-gray-500">
-                  We have sent a code to your phone number..
+                  We have sent a code to <span style={{ color: '#E2136E' }}>{walletNo}</span>
                 </p>
               </div>
             </div>
@@ -93,7 +133,7 @@ const VerifyOtp = () => {
               <form className="mt-12" onSubmit={handleSubmit}>
                 <div className="flex flex-col space-y-4">
                   <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-                    {otp.map((digit, index) => (
+                    {otpString.map((digit, index) => (
                       <div key={index} className="w-16 h-16">
                         <input
                           className="w-12 h-12 flex flex-col items-center justify-center text-center  outline-none rounded-xl border border-gray-200 text-md bg-white focus:bg-gray-50 focus:ring-1 ring-pink-500"
@@ -102,7 +142,8 @@ const VerifyOtp = () => {
                           value={digit}
                           onChange={(e) => handleChange(index, e.target.value)}
                           id={`otp-input-${index}`}
-                          style={{ color: digit ? "#ed32b2" : "black" }}
+                          style={{ color: digit ? "#E2136E" : "black" }}
+                          placeholder="0"
                           required
                         />
                       </div>
@@ -124,30 +165,27 @@ const VerifyOtp = () => {
                       )}
                     </div>
                     <div>
-                      <button className="font-mono mt-4 w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform rounded-lg" style={{backgroundColor:'#E2136E'}}>
+                      <button className="font-mono mt-4 w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform " style={{backgroundColor:'#E2136E'}}>
                         Verify Account
                       </button>
                     </div>
-
-                    {/* <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
-                      <p>Didn't receive code?</p>
-                      <a
-                        className="flex flex-row items-center text-pink-500"
-                        href="http://"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Resend
-                      </a>
-                    </div> */}
                   </div>
                 </div>
               </form>
-              
             </div>
           </div>
         </div>
       </div>
+      {isLoading && (
+        <div className="search-popup-overlay">
+          <div className="searchpopup bg-gray-200">
+            <Lottie
+              animationData={preloaderAnimation}
+              className="h-20 w-32"
+            ></Lottie>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

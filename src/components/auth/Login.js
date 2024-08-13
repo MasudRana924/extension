@@ -49,13 +49,13 @@ const Login = () => {
           for <span style={{ color: "#E2136E " }}>Login</span>
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className="w-full flex gap-2 mt-6 bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-pink-400 dark:focus:border-pink-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-pink-300 pl-2 pr-2">
+          <div className="w-full flex gap-2 mt-6 bg-white border  dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-pink-400 dark:focus:border-pink-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-pink-300 pl-2 pr-2">
             <p className="flex justify-center items-center text-gray-400">
               +88
             </p>
             <input
               className="block w-full h-12   text-gray-700 placeholder-gray-500 bg-white outline-none
-              auth-placeholder"
+              "
               type="text"
               placeholder="Account Number"
               aria-label="Phone"
@@ -65,9 +65,9 @@ const Login = () => {
           </div>
           <div className="w-full mt-4">
             <input
-              className="block w-full h-12 px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg outline-none auth-placeholder"
+              className="block w-full h-12 px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border  outline-none "
               type="password"
-              placeholder="Pin"
+              placeholder="pin"
               aria-label="Password"
               onChange={handlePasswordChange}
               required
@@ -84,7 +84,7 @@ const Login = () => {
             </Link>
           </div>
           <button
-            className="font-mono mt-4 w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform  rounded-lg "
+            className="font-mono mt-4 w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform  "
             style={{ backgroundColor: "#E2136E" }}
           >
             Signin
@@ -103,7 +103,7 @@ const Login = () => {
       </div>
       {isLoading && (
         <div className="popup-overlay">
-          <div className="popup">
+          <div className="popup ">
             <Lottie
               animationData={preloaderAnimation}
               className="h-32 w-44"

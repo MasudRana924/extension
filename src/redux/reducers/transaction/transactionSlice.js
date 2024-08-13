@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { privateGet } from '../../utilities/apiCaller';
 
 
-export const fetchtransactions = createAsyncThunk(
-    'fetchtransactions',
+export const fetchRecentTransactions = createAsyncThunk(
+    'fetchRecentTransactions',
     async ({ userToken, senderphone }, { rejectWithValue }) => {
         try {
             let url = '/my/transactions';
@@ -17,23 +17,16 @@ export const fetchtransactions = createAsyncThunk(
         }
     }
 );
-export const fetchOutTransactions = createAsyncThunk(
-    'fetchOutTransactions',
-    async ({ userToken }, { rejectWithValue }) => {
-        try {
-            const response = await privateGet('/my/out/transactions', userToken);
-            return response;
-        } catch (err) {
-            return rejectWithValue(err.response.data);
-        }
-    }
-);
 
-export const fetchInTransactions = createAsyncThunk(
-    'fetchInTransactions',
-    async ({ userToken }, { rejectWithValue }) => {
+export const fetchSearchTransactions = createAsyncThunk(
+    'fetchSearchTransactions',
+    async ({ userToken, senderphone }, { rejectWithValue }) => {
         try {
-            const response = await privateGet('/my/in/transactions', userToken);
+            let url = '/my/transactions';
+            if (senderphone) {
+                url += `?senderphone=${senderphone}`;
+            }
+            const response = await privateGet(url, userToken);
             return response;
         } catch (err) {
             return rejectWithValue(err.response.data);
@@ -44,6 +37,7 @@ export const fetchInTransactions = createAsyncThunk(
 export const mytransactionsSlice = createSlice({
     name: 'mytransactions',
     initialState: {
+        recentTransactions:[],
         mytransactions: [],
         myOutTransactions: [],
         myInTransactions: [],
@@ -54,60 +48,49 @@ export const mytransactionsSlice = createSlice({
         clearLastTransaction: (state) => {
             state.lastTransaction = null;
         },
+        clearMyTransaction: (state) => {
+            state.mytransactions = [];
+        },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchtransactions.pending, (state) => {
+            .addCase(fetchSearchTransactions.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchtransactions.fulfilled, (state, action) => {
-                console.log('fetchtransactions fulfilled payload:', action.payload);
+            .addCase(fetchSearchTransactions.fulfilled, (state, action) => {
+                console.log('fetchSearchTransactions fulfilled payload:', action.payload);
                 const transactions = action.payload.transactions;
                 state.mytransactions = transactions;
                 state.lastTransaction = transactions.length > 0 ? transactions[0] : null;
                 state.isLoading = false;
             })
-            .addCase(fetchtransactions.rejected, (state) => {
+            .addCase(fetchSearchTransactions.rejected, (state) => {
                 state.isLoading = false;
                 state.mytransactions = [];
                 state.filteredTransactions = [];
                 state.lastTransaction = null;
             })
-            .addCase(fetchOutTransactions.pending, (state) => {
+            .addCase(fetchRecentTransactions.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchOutTransactions.fulfilled, (state, action) => {
-                console.log('fetchOutTransactions fulfilled payload:', action.payload);
+            .addCase(fetchRecentTransactions.fulfilled, (state, action) => {
+                console.log('fetchSearchTransactions fulfilled payload:', action.payload);
                 const transactions = action.payload.transactions;
-                state.myOutTransactions = transactions;
-                state.lastTransaction = transactions.length > 0 ? transactions[0] : null;
+                state.recentTransactions = transactions;
+                // state.lastTransaction = transactions.length > 0 ? transactions[0] : null;
                 state.isLoading = false;
             })
-            .addCase(fetchOutTransactions.rejected, (state) => {
+            .addCase(fetchRecentTransactions.rejected, (state) => {
                 state.isLoading = false;
-                state.myOutTransactions = [];
-                state.lastTransaction = null;
+                state.recentTransactions = [];
+                state.filteredTransactions = [];
+                // state.lastTransaction = null;
             })
-            .addCase(fetchInTransactions.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(fetchInTransactions.fulfilled, (state, action) => {
-                console.log('fetchInTransactions fulfilled payload:', action.payload);
-                const transactions = action.payload.transactions;
-                state.myInTransactions = transactions;
-                state.lastTransaction = transactions.length > 0 ? transactions[0] : null;
-                state.isLoading = false;
-            })
-            .addCase(fetchInTransactions.rejected, (state) => {
-                state.isLoading = false;
-                state.myInTransactions = [];
-                state.lastTransaction = null;
-            });
     }
 });
 
 // Export the action creator
-export const { clearLastTransaction } = mytransactionsSlice.actions;
+export const { clearLastTransaction,clearMyTransaction } = mytransactionsSlice.actions;
 
 export default mytransactionsSlice.reducer
 
@@ -121,8 +104,8 @@ export default mytransactionsSlice.reducer
 // import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // import { privateGet} from '../../utilities/apiCaller';
 // import axios from "axios";
-// export const fetchtransactions = createAsyncThunk(
-//     'fetchtransactions ',
+// export const fetchSearchTransactions = createAsyncThunk(
+//     'fetchSearchTransactions ',
 //     async ({userToken}, { rejectWithValue }) => {
 //         const transactions = await privateGet('/my/transactions',userToken);
 //         return transactions;
@@ -155,10 +138,10 @@ export default mytransactionsSlice.reducer
 //     },
 //     extraReducers: (builder) => {
 //         builder
-//             .addCase(fetchtransactions.pending, (state) => {
+//             .addCase(fetchSearchTransactions.pending, (state) => {
 //                 state.isLoading = true
 //             })
-//             .addCase(fetchtransactions.fulfilled, (state, action) => {
+//             .addCase(fetchSearchTransactions.fulfilled, (state, action) => {
 //                 // state.mytransactions = action.payload;
 //                 // state.isLoading = false;
 //                 // if(action.payload.length>0){
@@ -166,7 +149,7 @@ export default mytransactionsSlice.reducer
 //                 // }
 //                 // console.log("payload",action.payload);
 //                 // console.log("payload",state.previousTransaction);
-//                 console.log('fetchtransactions fulfilled payload:', action.payload);
+//                 console.log('fetchSearchTransactions fulfilled payload:', action.payload);
 //                 const transactions = action.payload.transactions;
 //                 console.log("transactions",transactions);
 //                 state.mytransactions = transactions;
@@ -176,7 +159,7 @@ export default mytransactionsSlice.reducer
 //                 state.isLoading = false;
                 
 //             })
-//             .addCase(fetchtransactions.rejected, (state, action) => {
+//             .addCase(fetchSearchTransactions.rejected, (state, action) => {
 //                 state.isLoading = true
 //                 state.mytransactions = [];
 //             })
